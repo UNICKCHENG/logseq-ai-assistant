@@ -20,6 +20,9 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Build plugin
+        run: yarn build
         
       - name: Install zip
         uses: montudor/action-zip@v1
