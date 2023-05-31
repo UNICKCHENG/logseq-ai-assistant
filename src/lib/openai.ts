@@ -1,13 +1,14 @@
 import { getSettings } from './settings';
 
 export const chat = async(content: string) => {
-    const baseUrl: string = `${(await getSettings()).baseUrl}/v1/chat/completions`;
     try {
-        return await fetch(`${baseUrl}`, {
+        const { apiKey, address }: any = getSettings();
+        const url: string = `${address}/v1/chat/completions`;
+        return await fetch(`${url}`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${(await getSettings()).apiKeys}`
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
                 "model": "gpt-3.5-turbo",

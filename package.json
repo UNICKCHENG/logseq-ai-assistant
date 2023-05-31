@@ -1,14 +1,14 @@
 {
   "name": "ai-assistant",
-  "version": "0.0.0",
-  "description": "waiting",
+  "version": "0.1.0",
+  "description": "A Logseq plugin empowered by AI for effortless note-taking.",
   "main": "dist/index.html",
   "author": "unickcheng",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build"
   },
-  "license": "MIT",
   "dependencies": {
     "@logseq/libs": "^0.0.14",
     "react": "^18.2.0",
@@ -38,6 +38,10 @@
     "vite-plugin-logseq": "1.1.2"
   },
   "logseq": {
-    "id": "Ai-Assistant"
-  }
+    "title": "AI-Assistant",
+    "id": "AI-Assistant-unickcheng-20230531"
+  },
+  "repo": "UNICKCHENG/logseq-ai-assistant",
+  "title": "AI-Assistant",
+  "effect": true
 }

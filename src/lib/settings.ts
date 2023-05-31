@@ -20,11 +20,18 @@ export const settingsSchema: SettingSchemaDesc[] = [
 ];
 
 export function getSettings(): any {
-    const apiKeys: string = logseq.settings!["openaiKey"];
-    const baseUrl: string = logseq.settings!["openaiUrl"];
+    const apiKey: string = logseq.settings!["openaiKey"];
+    const address: string = logseq.settings!["openaiUrl"];
+
+    if(undefined === apiKey || '' === apiKey) {
+        throw new Error('Please set your OpenAI API Key in the plugin configuration.');
+    }
+    if(undefined === address || '' === address) {
+        throw new Error('Please set your OpenAI proxy address in the plugin configuration.');
+    }
 
     return {
-        apiKeys,
-        baseUrl,
+        apiKey,
+        address,
     };
 }
