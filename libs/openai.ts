@@ -1,3 +1,30 @@
+export enum OpenAIMessagesRole {
+    system = "system",
+    assistant = "assistant",
+    user ="user",
+}
+
+export interface OpenAIMessage {
+    role: OpenAIMessagesRole;
+    content: string;
+}
+
+export const toMessages = (user: string, opts?: {
+    assistant?: string, 
+    system?: string
+}) => {
+    const messages: OpenAIMessage[] = [];
+    const { assistant, system } = opts || {};
+    if (system) {
+        messages.push({role: OpenAIMessagesRole.system, content: system})
+    }
+    if (assistant) {
+        messages.push({role: OpenAIMessagesRole.assistant, content: assistant})
+    }
+    messages.push({role: OpenAIMessagesRole.user, content: user})
+    return messages;
+}
+
 export class OpenAI {
     private apiKey: string;
     private address: string;
@@ -9,7 +36,9 @@ export class OpenAI {
         this.model = model;
     }
 
-    public chat = async(content: string) => {
+    public chat = async(
+        messages: OpenAIMessage[]
+    ) => {
         try {
             const url: string = `${this.address}/v1/chat/completions`;
             return await fetch(`${url}`, {
@@ -20,7 +49,7 @@ export class OpenAI {
                 },
                 body: JSON.stringify({
                     "model": this.model,
-                    "messages": [{"role": "user", "content": content}],
+                    "messages": messages,
                     "stream": true,
                 })
             });

@@ -1,8 +1,8 @@
-import { summary, openai, settingsSchema } from '@/libs/api';
+import { summary, openai, settingsSchema, generateAdvancedQuery} from '@/libs/api';
 import '@logseq/libs';
 
 async function main () {
-    logseq.useSettingsSchema(await settingsSchema());
+    await logseq.useSettingsSchema(await settingsSchema());
 
     logseq.Editor.registerSlashCommand('gpt-block', 
         async () => {
@@ -16,6 +16,12 @@ async function main () {
         async() => {
             let { content, uuid }: any = await logseq.Editor.getCurrentBlock();
             await openai(content, uuid);
+    });
+
+    logseq.Editor.registerSlashCommand('aihey-query-beta',
+    async() => {
+        let { content, uuid }: any = await logseq.Editor.getCurrentBlock();
+        await generateAdvancedQuery(content, uuid);
     });
 }
 

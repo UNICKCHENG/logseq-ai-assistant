@@ -1,0 +1,309 @@
+[advanced-query]
+name = "advanced-query"
+description = "Advanced queries are written with Datalog and query the Datascript database. See [Advanced Query](https://docs.logseq.com/#/page/advanced%20queries)"
+prompt = '''
+Generate logseq Advanced Query code according to user needs (output code blocks only, without additional explanations). Please see the following instructions and examples for syntax of the code.
+
+```
+{:title  [:h2 "Your query title"]
+    
+     :query  [:find (pull ?b [*])
+    
+              :where ...]
+    
+     :inputs [...]
+    
+     :view (fn [query-result] [:div ...]) ;; or :keyword from config.edn
+    
+     :result-transform (fn [query-result] ...) ;; or :keyword from config.edn
+    
+     :collapsed? true
+    
+     :group-by-page? true
+    
+     :remove-block-children? true
+    
+     :rules [...]}
+```
+
+| Name | Description | Default | Optional |
+|---|---|---|---|
+| title | query title, supports hiccup | | true |
+| query | datascript query or simple query | | false |
+| inputs | query inputs, can be multiple values | | true |
+| view | fn or keyword | | true |
+| collapsed? | whether to collapse the result | false | true |
+| result-transform | fn or keyword | | true |
+| rules | list of rules to apply to query | | true |
+| group-by-page? | groups results by page, only applies in list view | true | true |
+| remove-block-children? | removes all children/descendants under a block result, only applies to block queries, | true | true |
+
+Query Examples
+
+1. Get all tasks
+```clojure
+#+BEGIN_QUERY
+{:title "All tasks"
+ :query [:find (pull ?b [*])
+         :where
+         [?b :block/marker _]]}
+#+END_QUERY
+```
+
+2. Get all tasks with a tag "project"
+```clojure
+#+BEGIN_QUERY
+{:title "All blocks with tag project"
+ :query [:find (pull ?b [*])
+         :where
+         [?p :block/name "project"]
+         [?b :block/refs ?p]]}
+#+END_QUERY
+```
+
+3. Blocks in 7ds with a page reference of datalog
+```clojure
+#+BEGIN_QUERY
+{:title "Journal blocks in last 7 days with a page reference of datalog"
+:query [:find (pull ?b [*])
+:in $ ?start ?today ?tag
+:where
+(between ?b ?start ?today)
+(page-ref ?b ?tag)]
+:inputs [:-7d :today "datalog"]}
+#+END_QUERY
+```
+
+4. All TODO tasks
+```clojure
+#+BEGIN_QUERY
+{:title "TODO tasks"
+ :query [:find (pull ?b [*])
+         :where
+         (task ?b #{"TODO"})]}
+#+END_QUERY
+```
+
+5. All the tags specified in the front matter (tags: tag1, tag2)
+```clojure
+#+BEGIN_QUERY
+{:title "All page tags"
+:query [:find ?tag-name
+        :where
+        [?tag :block/name ?tag-name]]
+:view (fn [tags]
+      [:div
+       (for [tag (flatten tags)]
+         [:a.tag.mr-1 {:href (str "#/page/" tag)}
+          (str "#" tag)])])}
+#+END_QUERY
+```
+
+6. All pages have a "programming" tag
+```clojure
+#+BEGIN_QUERY
+{:title "All pages have a *programming* tag"
+ :query [:find ?name
+       :in $ ?tag
+       :where
+       [?t :block/name ?tag]
+       [?p :block/tags ?t]
+       [?p :block/name ?name]]
+ :inputs ["programming"]
+ :view (fn [result]
+       [:div.flex.flex-col
+        (for [page result]
+          [:a {:href (str "#/page/" page)} (clojure.string/capitalize page)])])}
+#+END_QUERY
+```
+
+7. Get all the blocks with the property "type" and the value "programming_lang"
+```clojure
+#+BEGIN_QUERY
+{:title [:h2 "Programming languages list"]
+:query [:find (pull ?b [*])
+        :where
+        (property ?b :type "programming_lang")]}
+#+END_QUERY
+```
+
+8. TODO tasks tagged using current page
+```clojure
+#+BEGIN_QUERY
+{:title "All tasks tagged using current page"
+ :query [:find (pull ?b [*])
+       :in $ ?current-page
+       :where
+       [?p :block/name ?current-page]
+       [?b :block/refs ?p]
+       (task ?b #{"TODO"})]
+ :inputs [:current-page]}
+#+END_QUERY
+```
+
+9. Active tasks from the last 2 weeks
+```clojure
+#+BEGIN_QUERY
+{:title "🟢 ACTIVE"
+:query [:find (pull ?b [*])
+        :in $ ?start ?today
+        :where
+        (task ?b #{"NOW" "DOING"})
+        (between ?b ?start ?today)]
+:inputs [:-2w :today]
+:result-transform (fn [result]
+                    (sort-by (fn [h]
+                                (get h :block/priority "Z")) result))
+:collapsed? false}
+#+END_QUERY
+```
+
+10. Tasks referencing due dates in the past
+```clojure
+
+#+BEGIN_QUERY
+{:title "⚠️ OVERDUE"
+:query [:find (pull ?b [*])
+        :in $ ?start ?today
+        :where
+        (task ?b #{"NOW" "LATER" "TODO" "DOING"})
+        (between ?b ?start ?today)]
+:inputs [:-56d :today]
+:collapsed? false}
+#+END_QUERY
+```
+
+11. Tasks referencing due dates up to 10 days ahead
+```clojure
+
+#+BEGIN_QUERY
+    {:title "📅 NEXT"
+:query [:find (pull ?b [*])
+        :in $ ?start ?next
+        :where
+        (task ?b #{"NOW" "LATER" "TODO" "DOING"})
+        (between ?b ?start ?next)]
+:inputs [:today :+10d]
+:collapsed? false}
+#+END_QUERY
+```
+
+12. Tasks from last week which are still outstanding (may slip soon!)
+```clojure
+#+BEGIN_QUERY
+    {:title "🟠 SLIPPING"
+:query [:find (pull ?b [*])
+        :in $ ?start ?today
+        :where
+        (task ?b #{"NOW" "LATER" "TODO" "DOING"})
+        (between ?b ?start ?today)]
+:inputs [:-7d :today]
+:result-transform (fn [result]
+                    (sort-by (fn [h]
+                                (get h :block/created-at)) result))
+:collapsed? true}
+#+END_QUERY
+```
+
+13. Tasks created more than 1 week ago, less old than 2 months but still outstanding
+```clojure
+
+#+BEGIN_QUERY
+{:title "🔴 STALLED"
+:query [:find (pull ?b [*])
+        :in $ ?start ?today
+        :where
+        (task ?b #{"NOW" "LATER" "TODO" "DOING"})
+        (between ?b ?start ?today)]
+:inputs [:-2m :-1w]
+:result-transform (fn [result]
+                    (sort-by (fn [h]
+                                (get h :block/created-at)) result))
+:collapsed? true}
+]}
+#+END_QUERY
+```
+
+14. Next 7 days' deadline or schedule
+```clojure
+#+BEGIN_QUERY
+{:title "next 7 days' deadline or schedule"
+  :query [:find (pull ?block [*])
+          :in $ ?start ?next
+          :where
+          (or
+            [?block :block/scheduled ?d]
+            [?block :block/deadline ?d])
+          [(> ?d ?start)]
+          [(< ?d ?next)]]
+  :inputs [:today :+7d]
+  :collapsed? false}
+#+END_QUERY
+```
+
+15. Query with rules as input
+```clojure
+#+BEGIN_QUERY
+{:title "Blocks containing TODO that are not tasks"
+:query [:find (pull ?b [*])
+        :in $ ?query %
+        :where
+        (block-content ?b ?query)
+        (not-task ?b)]
+        :inputs ["TODO"
+                [[(not-task ?b)
+                (not [?b :block/marker _])]]]}
+#+END_QUERY
+```
+
+16. Query with rules via :rules
+```clojure
+#+BEGIN_QUERY
+{:title "Blocks that start with an https link"
+:query [:find (pull ?b [*])
+        :in $ %
+        :where (starts-with ?b "https://")]
+:rules [[(starts-with ?b ?substr)
+        [?b :block/content ?content]
+        [(clojure.string/starts-with? ?content ?substr)]]]}
+#+END_QUERY
+```
+
+17. Query that uses simple query
+```clojure
+#+BEGIN_QUERY
+{:title "DOING tasks with priority A"
+ :query (and (todo DOING) (priority A))
+ :collapsed? true}
+#+END_QUERY
+```
+
+18. Query that uses :current-block input
+```clojure
+#+BEGIN_QUERY
+{:title "Get children blocks of current query block"
+:inputs [:current-block]
+:query  [:find (pull ?b [*])
+:in $ ?current-block
+:where [?b :block/parent ?current-block]]}
+#+END_QUERY
+```
+
+19. Aggregate query
+```clojure
+#+BEGIN_QUERY
+{:title "Count number of blocks in the current page"
+ :query [:find (count ?b)
+         :in $ ?current-page
+         :where
+         [?p :block/name ?current-page]
+         [?b :block/page ?p]]
+ :inputs [:current-page]}
+#+END_QUERY
+```
+
+---
+
+Let's start a test now (Please note that the query should start with #+BEGIN_QUERY and end with #+END_QUERY).
+
+'''
