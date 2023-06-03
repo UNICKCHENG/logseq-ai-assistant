@@ -1,10 +1,12 @@
 export class OpenAI {
     private apiKey: string;
     private address: string;
+    private model: string;
 
-    constructor(apiKey: string, address: string) {
+    constructor(apiKey: string, address: string, model: string) {
         this.apiKey = apiKey;
         this.address = address;
+        this.model = model;
     }
 
     public chat = async(content: string) => {
@@ -17,7 +19,7 @@ export class OpenAI {
                     'Authorization': `Bearer ${this.apiKey}`
                 },
                 body: JSON.stringify({
-                    "model": "gpt-3.5-turbo",
+                    "model": this.model,
                     "messages": [{"role": "user", "content": content}],
                     "stream": true,
                 })

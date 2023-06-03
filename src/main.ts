@@ -1,17 +1,16 @@
 import { summary, openai, settingsSchema } from '@/libs/api';
 import '@logseq/libs';
 
-logseq.useSettingsSchema(settingsSchema);
+async function main () {
+    logseq.useSettingsSchema(await settingsSchema());
 
-function main () {
     logseq.Editor.registerSlashCommand('gpt-block', 
         async () => {
             let { uuid }: any = await logseq.Editor.getCurrentBlock();
             let content = await summary(uuid, true);
             content += '\nPlease try to summarize the content of the above text.'
             await openai(content, uuid);
-        }
-    )
+    });
 
     logseq.Editor.registerSlashCommand('gpt',
         async() => {

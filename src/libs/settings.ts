@@ -1,45 +1,48 @@
 import { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin";
+import { lang } from './language';
 
-export const settingsSchema: SettingSchemaDesc[] = [
-    {
-        key: "openaiKey",
-        type: "string",
-        default: "",
-        title: "OpenAI API Key",
-        description:
-          "Your OpenAI API key. You can get one at https://platform.openai.com/account/api-keys",
-    },
-    {
-        key: "openaiAddress",
-        type: "string",
-        default: "https://api.openai.com",
-        title: "OpenAI Address",
-        description:
-            "You can add the OpenAI proxy address. The default value is `https://api.openai.com`",
-    },
-    {
-        key: "language",
-        type: "string",
-        default: "",
-        title: "AI Language",
-        description:
-            "You can set the language for reply, such as `中文` `English` `Deutsch` `한국어` and so on.",
-    },
-];
+export const settingsSchema = async() => {
+    return [
+        {
+            key: "openaiKey",
+            type: "string",
+            default: "",
+            title: "OpenAI API Key",
+            description: (await lang()).message("openaiKey-description"),
+        },
+        {
+            key: "openaiAddress",
+            type: "string",
+            default: "https://api.openai.com",
+            title: "OpenAI Address",
+            description: (await lang()).message('openaiAddress-description'),
+        },
+        {
+            key: "GPTModel",
+            type: "enum",
+            default: "gpt-3.5-turbo",
+            title: "ChatGPT Models",
+            enumChoices: ["gpt-3.5-turbo", "gpt-4", "gpt-4-32k"],
+            description: (await lang()).message('GPTModel-description'),
+        },
+    ] as SettingSchemaDesc[];
+}
 
-export function getSettings(): any {
-    const apiKey: string = logseq.settings!["openaiKey"];
-    const address: string = logseq.settings!["openaiAddress"];
+export const getSettings = async() => {
+    const openaiKey: string = logseq.settings!["openaiKey"];
+    const openaiAddress: string = logseq.settings!["openaiAddress"];
+    const gptModel: string = logseq.settings!["GPTModel"];
 
-    if(undefined === apiKey || '' === apiKey) {
-        throw new Error('Please set your OpenAI API Key in the plugin configuration.');
+    if(undefined === openaiKey || '' === openaiKey) {
+        throw new Error((await lang()).message('apiKey-error'));
     }
-    if(undefined === address || '' === address) {
-        throw new Error('Please set your OpenAI proxy address in the plugin configuration.');
+    if(undefined === openaiAddress || '' === openaiAddress) {
+        throw new Error((await lang()).message('address-error'));
     }
 
     return {
-        apiKey,
-        address,
+        openaiKey,
+        openaiAddress,
+        gptModel
     };
 }

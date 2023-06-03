@@ -28,8 +28,8 @@ async function summary(uuid: string, isRecord: boolean): Promise<string> {
  */
 async function openai(content: string, rootId: string): Promise<void> {
     try {
-        const { apiKey, address } = getSettings();
-        const openai: OpenAI = new OpenAI(apiKey, address);
+        const { openaiKey, openaiAddress, gptModel } = await getSettings();
+        const openai: OpenAI = new OpenAI(openaiKey, openaiAddress, gptModel);
         const uuid: string|undefined = (await logseq.Editor.insertBlock(rootId, `loading...`))?.uuid;
 
 
