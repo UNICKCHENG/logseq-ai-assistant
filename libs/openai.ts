@@ -37,11 +37,12 @@ export class OpenAI {
     }
 
     public chat = async(
-        messages: OpenAIMessage[]
+        messages: OpenAIMessage[],
+        is_stream: boolean = true
     ) => {
         try {
             const url: string = `${this.address}/v1/chat/completions`;
-            return await fetch(`${url}`, {
+            const response = await fetch(`${url}`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -50,9 +51,20 @@ export class OpenAI {
                 body: JSON.stringify({
                     "model": this.model,
                     "messages": messages,
-                    "stream": true,
+                    "stream": is_stream,
                 })
             });
+
+            if (is_stream) {
+                return response;
+            }
+
+            const data = await response.json();
+            if (response.ok) {
+                return data.choices[0].message.content;
+            } else {
+                throw new Error(data.message);
+            }
         } catch (err: any) {
             throw new Error(err.message);
         }

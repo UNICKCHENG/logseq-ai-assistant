@@ -27,14 +27,14 @@ export const settingsSchema = async() => {
             enumChoices: ["gpt-3.5-turbo", "gpt-4", "gpt-4-32k"],
             description: (await lang()).message('GPTModel-description'),
         },
-        {
-            key: "generateAdvancedQuery",
-            type: "string",
-            default: '',
-            title: "Generate Advanced Query Prompt",
-            inputAs: "textarea",
-            description: (await lang()).message('generateAdvancedQuery-description'),
-        },
+        // {
+        //     key: "generateAdvancedQuery",
+        //     type: "string",
+        //     default: '',
+        //     title: "Generate Advanced Query Prompt",
+        //     inputAs: "textarea",
+        //     description: (await lang()).message('generateAdvancedQuery-description'),
+        // },
     ] as SettingSchemaDesc[];
 }
 
