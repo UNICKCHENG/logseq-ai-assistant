@@ -27,6 +27,17 @@ export const settingsSchema = async() => {
             enumChoices: ["gpt-3.5-turbo", "gpt-4", "gpt-4-32k"],
             description: (await lang()).message('GPTModel-description'),
         },
+        {
+            type: "heading",
+            title: "Beta Features",
+        },
+        {
+            key: "isTextQuery",
+            type: "boolean",
+            default: false,
+            title: "Text Query",
+            description: (await lang()).message('isTextQuery-description'),
+        }
         // {
         //     key: "generateAdvancedQuery",
         //     type: "string",
@@ -44,6 +55,7 @@ export const getSettings = async() => {
     const openaiAddress: string = logseq.settings!["openaiAddress"];
     const gptModel: string = logseq.settings!["GPTModel"];
     let promptAdvancedQuery: string = logseq.settings!["generateAdvancedQuery"];
+    const isTextQuery: boolean = logseq.settings!["isTextQuery"];
 
     if(undefined === openaiKey || '' === openaiKey) {
         throw new Error((await lang()).message('apiKey-error'));
@@ -59,6 +71,7 @@ export const getSettings = async() => {
         openaiKey,
         openaiAddress,
         gptModel,
-        promptAdvancedQuery
+        promptAdvancedQuery,
+        isTextQuery
     };
 }

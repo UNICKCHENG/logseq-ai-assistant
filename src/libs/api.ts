@@ -67,7 +67,6 @@ async function openaiStream(
                 }
             }
             await logseq.Editor.updateBlock(uuid, result);
-            await logseq.Editor.exitEditingMode();
         }
         await logseq.Editor.editBlock(block_id);
     } catch (err: any) {
