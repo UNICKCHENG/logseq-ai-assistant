@@ -6,22 +6,18 @@
 
 ### Installing Plugins
 
-> ⚠️ Currently, it has not been published on the Plugin Marketplace, so it can only be downloaded manually.
-
-- Click to download: [logseq-ai-assistant-1.0.0.zip](https://github.com/UNICKCHENG/logseq-ai-assistant/releases/download/v1.0.0/logseq-ai-assistant-1.0.0.zip)
-- After unzip, import the plugin file
-![](assets/ai-assiatnt-plugin-install.png)
+![](assets/ai-assistant-plugin-marketplace.png)
 
 ### Setting up openai
 
 - `openaiKey`：your openai key, which can be found on [openai.com](https://platform.openai.com/account/api-keys).
 - `openaiUrl`：You can also use your own proxy address, which defaults to the official address `https://api.openai.com`.
+
 ![](assets/ai-assistant-plugin-settings.png)
 
 ### Usage
 
-- `/gpt` Use OpenAI GPT3.5 API.
-- `/gpt-block` Summarize the content of the current block and its sub-blocks.
+- `/gpt` Use OpenAI GPT API.
 
 
 ## 🚀 Local development
