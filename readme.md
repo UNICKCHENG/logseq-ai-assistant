@@ -2,6 +2,12 @@
 
 ![](assets/ai-assistant.gif)
 
+[![Release](https://github.com/UNICKCHENG/logseq-ai-assistant/actions/workflows/main.yml/badge.svg)](https://github.com/UNICKCHENG/logseq-ai-assistant/actions/workflows/main.yml)
+[![download](https://img.shields.io/github/downloads/UNICKCHENG/logseq-ai-assistant/total?color=%230095FF)](https://github.com/UNICKCHENG/logseq-ai-assistant/releases)
+[![release](https://img.shields.io/github/v/release/UNICKCHENG/logseq-ai-assistant)](https://github.com/UNICKCHENG/logseq-ai-assistant/releases)
+[![logseq](https://img.shields.io/github/v/release/logseq/logseq?label=logseq)](https://github.com/logseq/logseq/releases)
+
+
 ## 🎉Usage
 
 ### Installing Plugins
