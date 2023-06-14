@@ -24,7 +24,7 @@ export const settingsSchema = async() => {
             type: "enum",
             default: "gpt-3.5-turbo",
             title: "ChatGPT Models",
-            enumChoices: ["gpt-3.5-turbo", "gpt-4", "gpt-4-32k"],
+            enumChoices: ["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k", "gpt-3.5-turbo-0613", "gpt-4-0613"],
             description: (await lang()).message('GPTModel-description'),
         },
         {
@@ -63,7 +63,7 @@ export const getSettings = async() => {
     if(undefined === openaiAddress || '' === openaiAddress) {
         throw new Error((await lang()).message('address-error'));
     }
-    if('' === promptAdvancedQuery.replaceAll(' ', '')) {
+    if( undefined === promptAdvancedQuery || '' === promptAdvancedQuery.replaceAll(' ', '')) {
         promptAdvancedQuery = pormpt['advanced-query'].prompt;
     }
 
