@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/UNICKCHENG/logseq-ai-assistant/compare/v1.1.0...v1.1.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* **gpt:** fix some bug ([696ed75](https://github.com/UNICKCHENG/logseq-ai-assistant/commit/696ed7561b2fa1c3afccd425eb54e5a11f71be09))
+
 # [1.1.0](https://github.com/UNICKCHENG/logseq-ai-assistant/compare/v1.0.0...v1.1.0) (2023-06-11)
 
 
