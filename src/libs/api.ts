@@ -1,6 +1,7 @@
 import '@logseq/libs';
 import { OpenAI, toMessages } from '@libs/openai';
 import { settingsSchema, getSettings } from './settings';
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 
 /**
  * Recursively aggregate all content on tree nodes.
@@ -40,7 +41,7 @@ async function openaiStream(
         const openai: OpenAI = new OpenAI(openaiKey, openaiAddress, gptModel);
         const uuid: string|undefined = (await logseq.Editor.insertBlock(block_id, `loading...`))?.uuid;
 
-        let result: string = "";
+        let result: string = "", text: string = "";
         const decoder = new TextDecoder("utf-8");
         const reader = (await openai.chat(toMessages(
             user_content, {
@@ -50,21 +51,19 @@ async function openaiStream(
 
         while (undefined !== uuid) {
             const { done, value }: any = await reader?.read();
-            if (done) {
-                break;
-            }
-            
-            const lines = decoder.decode(value).split("\n");
-            const parsedLines = lines
-                .map((line) => line.replace(/^data: /, "").trim())  // Remove the "data: " prefix
-                .filter((line) => line !== "" && line !== "[DONE]") // Remove empty lines and "[DONE]"
-                .map((line) => JSON.parse(line));                   // Parse the JSON string
+            if( done ) { break; }
 
-            for (const line of parsedLines) {
-                const { content } = line.choices[0].delta;
-                if (content) {
-                    result += content;
-                }
+            const lines = decoder.decode(value).split("\n");
+            lines.map((line) => line.replace(/^data: /, "").trim())
+                .filter((line) => line !== "" && line !== "[DONE]")
+                .map((line) => JSON.parse(line))
+                .forEach((line) => {
+                    text = line.choices[0].delta?.content as string;
+                    result += text ? text : '';
+                })
+
+            if('\"' === text || '\\' === text) {
+                continue;
             }
             await logseq.Editor.updateBlock(uuid, result);
         }
