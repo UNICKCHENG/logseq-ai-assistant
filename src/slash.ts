@@ -1,5 +1,6 @@
 import * as api from '@/libs';
 import '@logseq/libs';
+import { getSettings } from '@/libs/settings';
 
 export async function slash () {
     await logseq.Editor.registerSlashCommand('gpt-block', 
@@ -20,6 +21,11 @@ export async function slash () {
         async () => {
             let { uuid, content, parent }: any = await logseq.Editor.getCurrentBlock();
             const system_content: string|undefined = (await logseq.Editor.getBlock(parent.id))?.content || undefined;
-            await api.openaiStream(uuid, content, {system_content});
+
+            if((await getSettings()).isStreamingOutput) {
+                await api.openaiStream(uuid, content, {system_content});
+            } else {
+                await api.openaiMessage(uuid, content, {system_content});
+            }
     });
 }

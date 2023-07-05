@@ -32,6 +32,13 @@ export const settingsSchema = async() => {
             title: "Beta Features",
         },
         {
+            key: "isStreamingOutput",
+            type: "boolean",
+            default: true,
+            title: "Streaming Output",
+            description: (await lang()).message('isStreamingOutput-description'),
+        },
+        {
             key: "isTextQuery",
             type: "boolean",
             default: false,
@@ -72,6 +79,7 @@ export const getSettings = async() => {
         openaiAddress,
         gptModel,
         promptAdvancedQuery,
-        isTextQuery
+        isTextQuery,
+        isStreamingOutput: logseq.settings!["isStreamingOutput"] as boolean
     };
 }
