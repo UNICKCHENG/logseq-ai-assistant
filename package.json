@@ -1,6 +1,6 @@
 {
   "name": "ai-assistant",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A Logseq plugin empowered by AI for effortless note-taking.",
   "main": "dist/index.html",
   "author": "unickcheng",

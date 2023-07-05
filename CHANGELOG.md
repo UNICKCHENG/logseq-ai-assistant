@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/UNICKCHENG/logseq-ai-assistant/compare/v1.1.1...v1.1.2) (2023-07-05)
+
+
+### Bug Fixes
+
+* **openai-stream:** fix the error of json ([be4e1e5](https://github.com/UNICKCHENG/logseq-ai-assistant/commit/be4e1e595d2804d3a3aa3e366980eb676b511be5))
+
 ## [1.1.1](https://github.com/UNICKCHENG/logseq-ai-assistant/compare/v1.1.0...v1.1.1) (2023-06-14)
 
 
