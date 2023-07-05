@@ -1,7 +1,6 @@
 import '@logseq/libs';
 import { OpenAI, toMessages } from '@libs/openai';
 import { settingsSchema, getSettings } from './settings';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
 
 /**
  * Recursively aggregate all content on tree nodes.

@@ -1,4 +1,4 @@
-import * as api from '@/libs/api';
+import * as api from '@/libs';
 import '@logseq/libs';
 
 export async function slash () {

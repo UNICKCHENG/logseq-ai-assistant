@@ -1,5 +1,5 @@
 import '@logseq/libs';
-import { settingsSchema, getSettings } from '@/libs/settings';
+import { settingsSchema } from '@/libs';
 import { slash } from './slash';
 import { select } from './select/select';
 
